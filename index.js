@@ -21,7 +21,7 @@ module.exports = class BetterUtilityClasses extends Plugin {
           const elem = el._reactInternalFiber.child.child.child.child.child.child.stateNode;
           if (elem) {
             elem.setAttribute('data-user-id', res.props.user.id);
-            elem.setAttribute('data-channel-id', res.props.user.id);
+            elem.setAttribute('data-channel-id', res.props.channel.id);
           }
         }
       };
