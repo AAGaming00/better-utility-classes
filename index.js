@@ -4,6 +4,8 @@ const { inject, uninject } = require('powercord/injector');
 const { getOwnerInstance, waitFor } = require('powercord/util');
 module.exports = class BetterUtilityClasses extends Plugin {
   async startPlugin () {
+    document.body.classList.add('better-utilitycls')
+
     const MemberListItem = await getModule(x => x.default?.displayName === 'MemberListItem');
     inject('better-utilitycls-memberlist', MemberListItem.default.prototype, 'render', (args, res) => {
       res.props['data-user-id'] = res._owner?.stateNode.props.user.id;
@@ -56,6 +58,7 @@ module.exports = class BetterUtilityClasses extends Plugin {
   }
 
   pluginWillUnload () {
+    document.body.classList.remove('better-utilitycls')
     uninject('better-utilitycls-memberlist');
     uninject('better-utilitycls-dmlist');
     uninject('better-utilitycls-account');
