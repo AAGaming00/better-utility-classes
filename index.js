@@ -1,10 +1,10 @@
 const { Plugin } = require('powercord/entities');
 const { getModule } = require('powercord/webpack');
 const { inject, uninject } = require('powercord/injector');
-const { getOwnerInstance, waitFor } = require('powercord/util');
+const { getOwnerInstance, waitFor, findInTree } = require('powercord/util');
 module.exports = class BetterUtilityClasses extends Plugin {
   async startPlugin () {
-    document.body.classList.add('better-utilitycls')
+    document.body.classList.add('better-utilitycls');
 
     const MemberListItem = await getModule(x => x.default?.displayName === 'MemberListItem');
     inject('better-utilitycls-memberlist', MemberListItem.default.prototype, 'render', (args, res) => {
@@ -29,6 +29,19 @@ module.exports = class BetterUtilityClasses extends Plugin {
     });
     Object.assign(DirectMessage.DirectMessage, oDirectMessage);
 
+    const UserPopout = getModule(x => x.default?.displayName === 'UserPopout', false);
+    const oUserPopout = UserPopout.default;
+    inject('better-utilitycls-userpopout', UserPopout, 'default', (args, res) => {
+      console.log(args, res);
+      res.ref = elem => {
+        if (elem?._reactInternalFiber) {
+          const container = findInTree(elem._reactInternalFiber.return, x => x.stateNode, { walkable: [ 'return' ] });
+          container.stateNode.setAttribute('data-user-id', res.props.user.id);
+        }
+      };
+      return res;
+    });
+    Object.assign(UserPopout.default, oUserPopout);
 
     const classes = await getModule([ 'container', 'usernameContainer' ]); // from game activity toggle
     let container = await waitFor(`.${classes.container}`);
@@ -58,9 +71,10 @@ module.exports = class BetterUtilityClasses extends Plugin {
   }
 
   pluginWillUnload () {
-    document.body.classList.remove('better-utilitycls')
+    document.body.classList.remove('better-utilitycls');
     uninject('better-utilitycls-memberlist');
     uninject('better-utilitycls-dmlist');
+    uninject('better-utilitycls-userpopout');
     uninject('better-utilitycls-account');
     uninject('better-utilitycls-channel');
   }
