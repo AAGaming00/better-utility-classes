@@ -32,7 +32,6 @@ module.exports = class BetterUtilityClasses extends Plugin {
     const UserPopout = getModule(x => x.default?.displayName === 'UserPopout', false);
     const oUserPopout = UserPopout.default;
     inject('better-utilitycls-userpopout', UserPopout, 'default', (args, res) => {
-      console.log(args, res);
       res.ref = elem => {
         if (elem?._reactInternalFiber) {
           const container = findInTree(elem._reactInternalFiber.return, x => x.stateNode, { walkable: [ 'return' ] });
