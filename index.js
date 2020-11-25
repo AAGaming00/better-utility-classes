@@ -18,7 +18,7 @@ module.exports = class BetterUtilityClasses extends Plugin {
     inject('better-utilitycls-dmlist', DirectMessage, 'DirectMessage', (args, res) => {
       res.ref = el => {
         if (el) {
-          const elem = el._reactInternalFiber.child.child.child.child.child.child.stateNode;
+          const elem = el._reactInternals.child.child.child.child.child.child.stateNode;
           if (elem) {
             elem.setAttribute('data-user-id', res.props.user.id);
             elem.setAttribute('data-channel-id', res.props.channel.id);
@@ -33,8 +33,8 @@ module.exports = class BetterUtilityClasses extends Plugin {
     const oUserPopout = UserPopout.default;
     inject('better-utilitycls-userpopout', UserPopout, 'default', (args, res) => {
       res.ref = elem => {
-        if (elem?._reactInternalFiber) {
-          const container = findInTree(elem._reactInternalFiber.return, x => x.stateNode, { walkable: [ 'return' ] });
+        if (elem?._reactInternals) {
+          const container = findInTree(elem._reactInternals.return, x => x.stateNode, { walkable: [ 'return' ] });
           container.stateNode.setAttribute('data-user-id', res.props.user.id);
         }
       };
