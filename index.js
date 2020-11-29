@@ -17,7 +17,6 @@ module.exports = class BetterUtilityClasses extends Plugin {
     const oDirectMessage = DirectMessage.DirectMessage;
     inject('better-utilitycls-dmlist', DirectMessage, 'DirectMessage', (args, res) => {
       res.ref = el => {
-        console.dir(el)
         if (el) {
           const elem = (getReactInstance(el) || el._reactInternalFiber)?.child?.child?.child?.child?.child?.child?.stateNode;
           if (elem) {
