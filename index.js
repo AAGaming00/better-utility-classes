@@ -17,8 +17,9 @@ module.exports = class BetterUtilityClasses extends Plugin {
     const oDirectMessage = DirectMessage.DirectMessage;
     inject('better-utilitycls-dmlist', DirectMessage, 'DirectMessage', (args, res) => {
       res.ref = el => {
+        console.dir(el)
         if (el) {
-          const elem = getReactInstance(el).child.child.child.child.child.child.stateNode;
+          const elem = (getReactInstance(el) || el._reactInternalFiber)?.child?.child?.child?.child?.child?.child?.stateNode;
           if (elem) {
             elem.setAttribute('data-user-id', res.props.user.id);
             elem.setAttribute('data-channel-id', res.props.channel.id);
@@ -33,8 +34,8 @@ module.exports = class BetterUtilityClasses extends Plugin {
     const oUserPopout = UserPopout.default;
     inject('better-utilitycls-userpopout', UserPopout, 'default', (args, res) => {
       res.ref = elem => {
-        if (getReactInstance(elem)) {
-          const container = findInTree(getReactInstance(elem).return, x => x.stateNode, { walkable: [ 'return' ] });
+        if (elem) {
+          const container = findInTree((getReactInstance(elem) || elem._reactInternalFiber).return, x => x.stateNode, { walkable: [ 'return' ] });
           container.stateNode.setAttribute('data-user-id', res.props.user.id);
         }
       };
@@ -51,7 +52,7 @@ module.exports = class BetterUtilityClasses extends Plugin {
     inject('better-utilitycls-account', Account.__proto__, 'render', (args, res) => {
       let r = res;
       if (res instanceof Array) {
-        [ r ] = res.filter(x => x.props.className);
+        r = res.find(x => x.props.className);
       }
       if (r.props.children[0].props.children.props.children().props.children.props.src) {
         // eslint-disable-next-line prefer-destructuring
